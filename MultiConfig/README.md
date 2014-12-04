@@ -149,4 +149,4 @@ private void LoadConfig (PropertyInfo propInfo)
 	}
 }
 ```
-For a full implementation, please refer to [MultiConfig.cs](MultiConfig.cs)
+For a full implementation, please refer to [MultiConfigBase.cs](MultiConfigBase.cs)
