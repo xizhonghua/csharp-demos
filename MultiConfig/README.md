@@ -31,7 +31,7 @@ var mc = new MultiConfig();
 mc.TimeSlots = FileUtil.LoadInt("timeslots.txt");
 mc.ServerNames = FileUtil.LoadStringList("servernames.txt");
 mc.BrownPrices = FileUtil.LoadDoubleList("brown_enegy_price_list.txt");
-...
+\\ ...
 ```
 
 ### Now
@@ -43,6 +43,7 @@ Don't believe me? check out [Program.cs](Program.cs) yourself.
 var mc = new MultiConfig();
 mc.LoadConfigs("../../data/");
 ```
+
 ### Implementation
 
 Let us now talk about how can we achieve this. First we need to create a **Custom Attribute** class to tell which proporty has the config file and the filename of that config file. Here we create a *ConfigAttribute* class which has only property: *Filename*, the filename of the config file.
@@ -64,6 +65,7 @@ public class ConfigAttribute : Attribute
 	}
 }
 ```
+
 Now, we can decorate the properties with their config filenames. Note, some property such as *Path* doesn't have the *Config* attribute which means it is not configurable.
 
 ```CSharp
@@ -89,3 +91,7 @@ public class MultiConfig
 	// ...
 }
 ```
+
+The next step is to figure out those configuable properties on run time. We need reflection technique. Reflection allows us to obtain all the infomation about a type includes its name, property infos, interfaces implemented etc.
+
+First is to extract all the properties of a MultiConfig object, then filter out those non-configurable ones.
