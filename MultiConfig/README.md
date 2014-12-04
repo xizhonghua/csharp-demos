@@ -31,7 +31,7 @@ var mc = new MultiConfig();
 mc.TimeSlots = FileUtil.LoadInt("timeslots.txt");
 mc.ServerNames = FileUtil.LoadStringList("servernames.txt");
 mc.BrownPrices = FileUtil.LoadDoubleList("brown_enegy_price_list.txt");
-\\ ...
+// ...
 ```
 
 ### Now
@@ -92,6 +92,11 @@ public class MultiConfig
 }
 ```
 
-The next step is to figure out those configuable properties on run time. We need reflection technique. Reflection allows us to obtain all the infomation about a type includes its name, property infos, interfaces implemented etc.
+The next step is to figure out those configuable properties on run time. We need reflection technique. Reflection allows us to obtain all the infomation about a type includes its name, property infos, interfaces implemented etc. First, we want to extract all the properties of a MultiConfig object, then we can filter out those non-configurable ones.
 
-First is to extract all the properties of a MultiConfig object, then filter out those non-configurable ones.
+```CSharp
+var props = typeof(MultiConfig).GetProperties ().Where (p => {
+	var attrs = (ConfigAttribute[])p.GetCustomAttributes (typeof(ConfigAttribute), true);
+	return attrs != null && attrs.Length > 0;
+}).ToList ();
+```
