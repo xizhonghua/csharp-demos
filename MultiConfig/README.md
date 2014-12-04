@@ -34,5 +34,13 @@ mc.BrownPrices = FileUtil.LoadDoubleList("brown_enegy_price_list.txt");
 ...
 ```
 
+### Now
 
+Now, this task can be done in only two lines, no matter how many properties that class has.
+Don't believe me? check out [Program.cs](Program.cs) yourself.
+
+```CSharp
+var mc = new MultiConfig();
+mc.LoadConfigs("../../data");
+```
  
