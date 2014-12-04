@@ -7,7 +7,6 @@
 
 ### MultiConfig Prototype
 ```CSharp
-
 public class MultiConfig
 {
 	public int TimeSlots { get; private set; }
@@ -20,7 +19,6 @@ public class MultiConfig
 
 ### Previous Method
 ```CSharp
-
 var mc = new MultiConfig();
 mc.TimeSlots = FileUtil.LoadInt("timeslots.txt");
 mc.ServerNames = FileUtil.LoadStringList("servernames.txt");
