@@ -1,7 +1,8 @@
 ## MultiConfig
 
-##Used Techniques:
-
+###Used Techniques:
 * Custom Attributes
+* Reflection
+* Generic Types
 
  
