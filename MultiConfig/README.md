@@ -100,8 +100,15 @@ var props = typeof(MultiConfig).GetProperties ().Where (p => {
 	return attrs != null && attrs.Length > 0;
 }).ToList ();
 ```
+Meanwhile, we can get the config filename for each configrable property by,
 
-Finally, we can define a priave method in MultiConfig class to load the config for a given property.
+```CSharp
+var attr = (ConfigAttribute[])propInfo.GetCustomAttributes (typeof(ConfigAttribute), true);
+var configFilename = attr [0].Filename;
+```
+
+Now we all close to the goal, suppose we have alread loaded the values of that config file into a list of string. 
+Only two steps remains, 1. how can we convert List<string> to desiered types, 2. how can we assign the converted values to an instance. We can define a priave method in MultiConfig class to load the config for a given property.
 
 ```CSharp
 private void LoadConfig (PropertyInfo propInfo)
@@ -112,21 +119,24 @@ private void LoadConfig (PropertyInfo propInfo)
 	var configFilename = attr [0].Filename;
 	var ppt = propInfo.PropertyType;
 	
+	// load the values into a List<string>
 	var values = FileUtil.LoadFile (this.Path + configFilename);
 	
-	// a list
+	// the property is a list
 	if (ppt.GetInterfaces ().Any (x =>
 		x.IsGenericType &&
 	    x.GetGenericTypeDefinition () == typeof(IList<>))) {
-
+		// get the value type (T) List<T>
 		var valueType = ppt.GetGenericArguments () [0];
-
+		
+		// create an instance List<T> which has the same type of this property
 		var listInstance = (IList)typeof(List<>)
 			.MakeGenericType (valueType)
 			.GetConstructor (Type.EmptyTypes)
 			.Invoke (null);
 
 		values.ForEach (v => {
+			// convert the value to proper type
 			var vv = Convert.ChangeType (v, valueType);
 			listInstance.Add (vv);
 		});
@@ -137,6 +147,6 @@ private void LoadConfig (PropertyInfo propInfo)
 		var valueInPropType = Convert.ChangeType (values [0], ppt);
 		propInfo.SetValue (this, valueInPropType, null);
 	}
-
 }
 ```
+For a full implementation, please refer to [MultiConfig.cs](MultiConfig.cs)
