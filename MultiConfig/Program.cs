@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace MultiConfig
 {
@@ -6,6 +7,14 @@ namespace MultiConfig
 	{
 		public static void Main (string[] args)
 		{
+
+			var prop = typeof(MultiConfig).GetProperties ().Where (p => {
+				var attrs = (ConfigAttribute[])p.GetCustomAttributes (typeof(ConfigAttribute), true);
+				return attrs != null && attrs.Length > 0;
+			}).ToList ();
+
+			prop.ForEach (p => Console.WriteLine (p.PropertyType));
+
 			var mc = new MultiConfig ();
 			mc.LoadConfigs ("../../data/");
 
