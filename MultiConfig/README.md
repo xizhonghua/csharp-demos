@@ -41,6 +41,51 @@ Don't believe me? check out [Program.cs](Program.cs) yourself.
 
 ```CSharp
 var mc = new MultiConfig();
-mc.LoadConfigs("../../data");
+mc.LoadConfigs("../../data/");
 ```
- 
+### Implementation
+
+Let us now talk about how can we achieve this. First we need to create a **Custom Attribute** class to tell which proporty has the config file and the filename of that config file. Here we create a *ConfigAttribute* class which has only property: *Filename*, the filename of the config file.
+
+```CSharp
+// only apply on property
+[AttributeUsage (AttributeTargets.Property)]
+public class ConfigAttribute : Attribute
+{
+	/// <summary>
+	/// Config filename
+	/// </summary>
+	/// <value>The filename.</value>
+	public string Filename { get; set; }
+
+	public ConfigAttribute (string filename)
+	{
+		this.Filename = filename;
+	}
+}
+```
+Now, we can decorate the properties with their config filenames. Note, some property such as *Path* doesn't have the *Config* attribute which means it is not configurable.
+
+```CSharp
+public class MultiConfig
+{
+	[Config ("timeslots.txt")]
+	public int TimeSlots { get; private set; }
+
+	[Config ("servercount.txt")]
+	public int ServerCount { get; private set; }
+
+	[Config ("servernames.txt")]
+	public List<string> ServerNames { get; private set; }
+
+	[Config ("brown_enegy_price_list.txt")]
+	public List<double> BrownPrices { get; private set; }
+
+	[Config ("green-enegy.txt")]
+	public List<int> GreenEnegies { get; private set; }
+	
+	public string Path { get; private set; }
+
+	// ...
+}
+```
