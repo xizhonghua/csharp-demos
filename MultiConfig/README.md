@@ -100,3 +100,43 @@ var props = typeof(MultiConfig).GetProperties ().Where (p => {
 	return attrs != null && attrs.Length > 0;
 }).ToList ();
 ```
+
+Finally, we can define a priave method in MultiConfig class to load the config for a given property.
+
+```CSharp
+private void LoadConfig (PropertyInfo propInfo)
+{
+	var attr = (ConfigAttribute[])propInfo.GetCustomAttributes (typeof(ConfigAttribute), true);
+	if (attr == null || attr.Length == 0) return;
+
+	var configFilename = attr [0].Filename;
+	var ppt = propInfo.PropertyType;
+	
+	var values = FileUtil.LoadFile (this.Path + configFilename);
+	
+	// a list
+	if (ppt.GetInterfaces ().Any (x =>
+		x.IsGenericType &&
+	    x.GetGenericTypeDefinition () == typeof(IList<>))) {
+
+		var valueType = ppt.GetGenericArguments () [0];
+
+		var listInstance = (IList)typeof(List<>)
+			.MakeGenericType (valueType)
+			.GetConstructor (Type.EmptyTypes)
+			.Invoke (null);
+
+		values.ForEach (v => {
+			var vv = Convert.ChangeType (v, valueType);
+			listInstance.Add (vv);
+		});
+
+		propInfo.SetValue (this, listInstance, null);
+	} else {
+		// single value
+		var valueInPropType = Convert.ChangeType (values [0], ppt);
+		propInfo.SetValue (this, valueInPropType, null);
+	}
+
+}
+```
