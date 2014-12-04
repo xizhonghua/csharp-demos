@@ -42,26 +42,11 @@ namespace MultiConfig
 		}
 	}
 
-	public class MultiConfig
+	public abstract class MultiConfigBase
 	{
-		[Config ("timeslots.txt")]
-		public int TimeSlots { get; private set; }
-
-		[Config ("servercount.txt")]
-		public int ServerCount { get; private set; }
-
-		[Config ("servernames.txt")]
-		public List<string> ServerNames { get; private set; }
-
-		[Config ("brown_enegy_price_list.txt")]
-		public List<double> BrownPrices { get; private set; }
-
-		[Config ("green-enegy.txt")]
-		public List<int> GreenEnegies { get; private set; }
-
 		public string Path { get; private set; }
 
-		public MultiConfig ()
+		public MultiConfigBase ()
 		{
 		}
 
@@ -124,6 +109,29 @@ namespace MultiConfig
 
 				propInfo.SetValue (this, valueInPropType, null);
 			}
+
+		}
+	}
+
+	public class GreenDataCenterConfig : MultiConfigBase
+	{
+		[Config ("timeslots.txt")]
+		public int TimeSlots { get; private set; }
+
+		[Config ("servercount.txt")]
+		public int ServerCount { get; private set; }
+
+		[Config ("servernames.txt")]
+		public List<string> ServerNames { get; private set; }
+
+		[Config ("brown_enegy_price_list.txt")]
+		public List<double> BrownPrices { get; private set; }
+
+		[Config ("green-enegy.txt")]
+		public List<int> GreenEnegies { get; private set; }
+
+		public GreenDataCenterConfig ()
+		{
 
 		}
 	}
